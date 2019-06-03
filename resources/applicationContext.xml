@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="username" value="root"></property>
+		<property name="password" value="root"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/jpa?useUnicode=true&amp;characterEncoding=UTF-8"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+	</bean>
+	<!-- 注解扫描路径 -->
+	<context:component-scan base-package="/com.dao,/com.service"></context:component-scan>
+	<!-- SpringMVC使用注解 -->
+	<mvc:annotation-driven />
+	<!-- 启动AOP -->
+	<aop:aspectj-autoproxy />
+	<!-- 事务注解 -->
+	<tx:annotation-driven />
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="jpa"></property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"></property>
+	</bean>
+	<!-- SpringMVC -->
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+		<!-- 事务管理器 -->
+	<bean id="transactionManager1"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- mybatis的SqlSessionFactoryBean -->
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<!-- 映射文件所在的位置 -->
+		<property name="mapperLocations" value="classpath*:com/mapper/*.xml"></property>
+		<property name="typeAliasesPackage" value="com.entity"></property>
+		<property name="configurationProperties">
+			<props>
+				<prop key="logImpl">LOG4J</prop>
+			</props>
+		</property>
+
+
+		<!-- 配置分页插件 -->
+		<property name="plugins">
+			<array>
+				<bean class="com.github.pagehelper.PageHelper">
+					<property name="properties">
+						<value>
+							dialect=mysql
+							reasonable=true
+						</value>
+					</property>
+				</bean>
+			</array>
+		</property>
+
+	</bean>
+
+	<!-- dao接口的位置 -->
+	<mybatis-spring:scan base-package="com.dao" />
+
+	<!-- 事务注解驱动 -->
+	<tx:annotation-driven />
+<task:annotation-driven/>
+	<!-- 扫描包 -->
+	
+	<!-- 拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<mvc:exclude-mapping path="/login" />
+			<bean class="com.interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- one of the properties available; the maximum file size in bytes -->
+		<!-- 上传文件的最大值，单位字节，默认-1，无限制，50MB -->
+		<property name="maxUploadSize" value="52428800" />
+		<!-- 内存占用最大值，默认10240，5MB -->
+		<property name="maxInMemorySize" value="5242880"></property>
+		<!-- 临时文件目录，默认为Web容器默认临时目录 -->
+		<property name="uploadTempDir" value="WEB-INF/jsp/upload/temp" />
+		<!-- 请求编码格式 -->
+		<property name="defaultEncoding" value="UTF-8"></property>
+		<!-- 延迟文件解析，可用于判断文件大小、获取名称等操作 -->
+		<property name="resolveLazily" value="true" />
+	</bean>
+
+	<bean
+		class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"></bean>
+</beans>

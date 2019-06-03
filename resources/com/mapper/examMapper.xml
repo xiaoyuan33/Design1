@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.ExamDao">
+<resultMap id="BaseResultMap" type="com.entity.User">
+<id column="id" jdbcType="INTEGER" property="id"/>
+<result column="name" jdbcType="VARCHAR" property="name"/>
+<result column="authority" jdbcType="VARCHAR" property="authority"/>
+<result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+<result column="level" jdbcType="VARCHAR" property="level"/>
+<result column="password" jdbcType="VARCHAR" property="password"/>
+<result column="tel" jdbcType="VARCHAR" property="tel"/>
+</resultMap>
+<resultMap id="BaseMap" type="com.entity.User">
+<id column="id" jdbcType="INTEGER" property="id"/>
+<result column="name" jdbcType="VARCHAR" property="name"/>
+<result column="authority" jdbcType="VARCHAR" property="authority"/>
+</resultMap>
+<resultMap id="ResultMap" type="com.entity.Exam">
+<id column="id" jdbcType="INTEGER" property="id"/>
+<result column="name" jdbcType="VARCHAR" property="name"/>
+</resultMap>
+<insert id="addExam" parameterType="exam">
+insert into exam (endTime, name, num, position, startTime, state) VALUES (#{endTime}, #{name}, #{num}, #{position}, #{startTime}, '未分配')
+
+</insert>
+<select id="listExam" resultType="map">
+select * from exam
+</select>
+<!--分配监考时查询全部教师  -->
+<select id="getUser" parameterType="user" resultMap="BaseResultMap">
+select * from user 
+</select>
+
+<!--分配监考时查询全部考试  -->
+<select id="getExam" parameterType="exam" resultMap="ResultMap">
+select id,name from exam
+</select>
+
+<insert id="allotExam" parameterType="userExamKey">
+insert into user_exam (USER_ID, EXAM_ID) VALUES (#{userId}, #{examId} )
+</insert>
+
+
+<update id="changeState" parameterType="exam">
+update exam set state='已分配' where id=#{id}
+</update>
+<select id="getById" parameterType="int" resultType="exam">
+select * from exam where id=#{id}
+</select>
+<select id="getAllName" parameterType="int" resultType="String">
+select distinct name from user,user_exam where user.id = user_exam.USER_ID and EXAM_ID=#{examId}
+</select>
+<select id="getTime" resultType="map">
+select startTime,user.name un,exam.position,exam.name en from user,exam,user_exam where user.id=user_exam.user_id and exam.id=user_exam.exam_id
+</select>
+</mapper>

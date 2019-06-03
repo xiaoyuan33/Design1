@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dao.UserDao">
+<resultMap id="BaseResultMap" type="com.entity.User">
+<id column="id" jdbcType="INTEGER" property="id"/>
+<result column="name" jdbcType="VARCHAR" property="name"/>
+<result column="authority" jdbcType="VARCHAR" property="authority"/>
+<result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+<result column="level" jdbcType="VARCHAR" property="level"/>
+<result column="password" jdbcType="VARCHAR" property="password"/>
+<result column="tel" jdbcType="VARCHAR" property="tel"/>
+<result column="en" jdbcType="VARCHAR" property="en"/>
+</resultMap>
+<!-- 登录查询 -->
+<select id="selectByLogin" parameterType="string" resultType="user">
+select * from user where name=#{name}
+</select>
+<!--添加用户  -->
+<insert id="addUser" parameterType="user">
+insert into user (authority, introduction, level, name, password, tel,en) VALUES (#{authority}, #{introduction}, #{level}, #{name}, #{password}, #{tel},'0')
+</insert>
+<!--修改时查找全部学生  -->
+<select id="getAllUser" parameterType="user" resultMap="BaseResultMap">
+select * from user
+</select>
+<update id="changeUser" parameterType="user">
+update user
+    set authority = #{authority,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      tel = #{tel,jdbcType=VARCHAR}
+      where name=#{name}
+</update>
+<select id="listUser" resultType="map">
+select * from user
+</select>
+<select id="listUserDesc" resultType="map">
+select * from user  order by en asc
+</select>
+<update id="changeEn" parameterType="user">
+update user
+  set en = #{en}+1
+      where id=#{id}
+</update>
+<select id="getOneUser" parameterType="int" resultType="user">
+select * from user where id=#{id}
+</select>
+<select id="getUserByName" parameterType="String" resultType="user">
+select * from user where name=#{name}
+</select>
+</mapper>
