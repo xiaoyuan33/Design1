@@ -126,7 +126,7 @@
 
 					<div class="alert alert-info">
 						<button type="button" class="close">×</button>
-						<strong>${name}</strong> 欢迎来到软件工程专业管理系统123
+						<strong>${name}</strong> 欢迎来到软件工程专业管理系统1234
 					</div>
 
 					<div class="block">
