@@ -26,7 +26,7 @@
 }
 
 .brand .first {
-	color: #ccc;
+	color: #ffffff;
 	font-style: italic;
 }
 
@@ -77,7 +77,7 @@
 						<li><a tabindex="-1" href="logout">注销</a></li>
 					</ul></li>
 			</ul>
-			<a class="brand" href="index.jsp"><span class="first">软件工程专业工作管理系统</span>
+			<a class="brand" href="index.jsp"><span class="first">NEFU考试后台系统</span>
 				<span class="second"></span></a>
 		</div>
 	</div>
