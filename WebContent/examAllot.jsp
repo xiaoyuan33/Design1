@@ -107,12 +107,10 @@
                   </ul>
 
 	</div>
-
 	<div class="content">
-
 		<div class="header">
 			<h1 class="page-title">监考分配</h1>
-		</div>
+		</div> 
 
 		<div class="container-fluid">
 			<div class="row-fluid">
