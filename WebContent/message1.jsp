@@ -80,7 +80,7 @@
 			<a class="brand" href="index.jsp"><span class="first">NEFU考试后台系统</span>
 				<span class="second"></span></a>
 		</div>
-	</div>
+	</div> 
 	<div class="row-fluid">
 		<div class="dialog">
 			<div class="block">
